@@ -40,7 +40,7 @@ RCT_EXPORT_MODULE()
     self.locationManager.delegate = self;
     self.locationManager.pausesLocationUpdatesAutomatically = NO;
     self.dropEmptyRanges = NO;
-      
+
     self.eddyStoneScanner = [[ESSBeaconScanner alloc] init];
     self.eddyStoneScanner.delegate = self;
   }
@@ -366,7 +366,7 @@ RCT_EXPORT_METHOD(shouldDropEmptyRanges:(BOOL)drop)
 
 - (void)notifyAboutBeaconChanges:(NSArray *)beacons {
     NSMutableArray *beaconArray = [[NSMutableArray alloc] init];
-    
+
     for (id key in beacons) {
         ESSBeaconInfo *beacon = key;
         NSDictionary *info = [self getEddyStoneInfo:beacon];
@@ -400,29 +400,29 @@ RCT_EXPORT_METHOD(shouldDropEmptyRanges:(BOOL)drop)
     if ([rssi floatValue] >= 0){
         return [NSNumber numberWithInt:-1];
     }
-    
+
     float ratio = [rssi floatValue] / ([txPower floatValue] - 41);
     if (ratio < 1.0) {
         return [NSNumber numberWithFloat:pow(ratio, 10)];
     }
-    
+
     float distance = (0.89976) * pow(ratio, 7.7095) + 0.111;
     return [NSNumber numberWithFloat:distance];
 }
 
 - (NSString *)getEddyStoneUUID:(NSData*)data {
     const unsigned char *dataBuffer = (const unsigned char *)[data bytes];
-    const int EDDYSTONE_UUID_LENGTH = 10;
+    const int EDDYSTONE_UUID_LENGTH = 16;
     if (!dataBuffer) {
         return [NSString string];
     }
-    
+
     NSMutableString *hexString  = [NSMutableString stringWithCapacity:(data.length * 2)];
     [hexString appendString:@"0x"];
     for (int i = 0; i < EDDYSTONE_UUID_LENGTH; ++i) {
         [hexString appendString:[NSString stringWithFormat:@"%02lx", (unsigned long)dataBuffer[i]]];
     }
-    
+
     return [NSString stringWithString:hexString];
 }
 
